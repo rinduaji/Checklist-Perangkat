@@ -3,13 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class DataAC extends CI_Model {
 
-	public function get($byBulan = '', $byTahun = '', $byID = '')
+	public function get($byBulan = '', $byTahun = '', $byIdRuangan = '', $byID = '')
 	{
 		if ($byBulan != '') {
 			$this->db->where('MONTH(tanggal)', $byBulan);
 		}
 		if ($byTahun != '') {
 			$this->db->where('YEAR(tanggal)', $byTahun);
+		}
+		if ($byIdRuangan != '') {
+			$this->db->where('id_ruangan', $byIdRuangan);
 		}
 		if ($byID != '') {
 			$this->db->where('id_checklist_ac', $byID);
@@ -27,7 +30,7 @@ class DataAC extends CI_Model {
 
 		$data = array(
 			'id_checklist_ac'	=> $this->input->post('id_checklist_ac'),
-			'ruangan'			=> $this->input->post('ruangan'),
+			'id_ruangan'		=> $this->input->post('id_ruangan'),
 			'tanggal'			=> date('Y-m-d'),
 			'sts_ac_pagi'		=> $this->input->post('sts_ac_pagi'),
 			'temp_pagi'			=> $this->input->post('temp_pagi'),
@@ -62,7 +65,7 @@ class DataAC extends CI_Model {
 	{
 		$data = array(
 			'id_checklist_ac'	=> $this->input->post('id_checklist_ac'),
-			'ruangan'			=> $this->input->post('ruangan'),
+			'id_ruangan'		=> $this->input->post('id_ruangan'),
 			'tanggal'			=> date('Y-m-d'),
 			'sts_ac_pagi'		=> $this->input->post('sts_ac_pagi'),
 			'temp_pagi'			=> $this->input->post('temp_pagi'),

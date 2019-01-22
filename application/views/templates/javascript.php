@@ -8,7 +8,7 @@
 <script>
   if ('<?= $this->uri->segment(2) ?>' == 'pc') {
     $(document).ready( function () {
-      tampil_data_pc($('#inputBulan').val(),$('#inputTahun').val());
+      tampil_data_pc($('#inputBulan').val(),$('#inputTahun').val(),$('input[name=shiftForm]:checked').val());
 
       $('#myTable').DataTable( {
         responsive: true,
@@ -52,6 +52,7 @@
           action: function ( e, dt, node, config ) {
             $('.modal-title').text('Tambah Data');
             $('#myForm').attr('action', "<?= site_url('checklist/tambah/pc') ?>");
+            $('#input_tanggal').val('<?= date('d-m-Y') ?>');
             $('#input_id_checklist_pc').val('');
             $('#input_pc_id').val('');
             $('#input_nama_petugas').val('');
@@ -68,17 +69,21 @@
       } );
 
       $('#inputBulan').on('change', function() {
-        tampil_data_pc(this.value, $('#inputTahun').val());
+        tampil_data_pc(this.value, $('#inputTahun').val(), $('input[name=shiftForm]:checked').val());
       });
 
       $('#inputTahun').on('change', function() {
-        tampil_data_pc($('#inputBulan').val(), this.value);
+        tampil_data_pc($('#inputBulan').val(), this.value, $('input[name=shiftForm]:checked').val());
       });
 
-      function tampil_data_pc(bulan, tahun){
+      $('#inputShiftForm input[type=radio]').change(function(){
+        tampil_data_pc($('#inputBulan').val(), $('#inputTahun').val(), this.value);
+      });
+
+      function tampil_data_pc(bulan, tahun, shift){
         $.ajax({
           type  : 'ajax',
-          url   : '<?php echo site_url()?>/checklist/pc_list/'+bulan+'/'+tahun,
+          url   : '<?php echo site_url()?>/checklist/pc_list/'+bulan+'/'+tahun+'/'+shift,
           async : false,
           dataType : 'json',
           success : function(data){
@@ -99,11 +104,6 @@
               '</tr>';
             }
             $('#show_data').html(html);
-
-            $('#btnHapus').click(function(){
-              alert("ID untuk Hapus = "+this.value);
-            // $('#myModal').modal('show');
-          });
           }
         });
       }
@@ -112,9 +112,11 @@
       // alert($('#inputBulan').val());
       $.ajax({
         type     : 'GET',
-        url      : '<?php echo site_url()?>/checklist/pc_list/nope/nope/'+this.value,
+        url      : '<?php echo site_url()?>/checklist/pc_list/nope/nope/nope/'+this.value,
         dataType : 'json',
         success : function(data){
+          $('#input_tanggal').val(moment(data[0].tanggal).format('DD/MM/YYYY'));
+          $("input[name='shift'][value='"+data[0].shift+"']").prop('checked', true);
           $('#input_id_checklist_pc').val(data[0].id_checklist_pc);
           $('#input_pc_id').val(data[0].pc_id);
           $('#input_nama_petugas').val(data[0].nama_petugas);
@@ -133,191 +135,299 @@
     });
 
       $('#show_data').on('click','#btnHapus',function(){
-        window.location.href = "<?= site_url('checklist/hapus/pc/') ?>"+this.value;
-        return false;
+        if (confirm("Yakin akan menghapus data yang dipilih?")) {
+          window.location.href = "<?= site_url('checklist/hapus/pc/') ?>"+this.value;
+        }
       });
     } );
-  } else if ('<?= $this->uri->segment(2) ?>' == 'ac') {
-    $(document).ready( function () {
-      tampil_data_ac($('#inputBulan').val(), $('#inputTahun').val());
+} else if ('<?= $this->uri->segment(2) ?>' == 'ac') {
+  $(document).ready( function () {
+    tampil_data_ac($('#inputBulan').val(), $('#inputTahun').val(), $('#inputRuangan').val());
 
-      $('#myTable').DataTable( {
-        responsive: true,
-        dom: 'Bfrtip',
-        buttons: [{
-          text: '<i class="fas fa-plus"></i> Tambah Data',
-          action: function ( e, dt, node, config ) {
-            $('.modal-title').text('Tambah Data');
-            $('#myForm').attr('action', "<?= site_url('checklist/tambah/ac') ?>");
-            $('#input_id_checklist_ac').val('');
-            $('#input_ruangan').val('');
-            $('#input_sts_ac_pagi').val('');
-            $('#input_temp_pagi').val('');
-            $('#input_pic_pagi').val('');
-            $('#input_keterangan_pagi').val('');
-            $('#input_sts_ac_malam').val('');
-            $('#input_temp_malam').val('');
-            $('#input_pic_malam').val('');
-            $('#input_keterangan_malam').val('');
-            $('#myModal').modal('show');
+    $('#myTable').DataTable( {
+      responsive: true,
+      dom: 'Bfrtip',
+      buttons: [{
+        text: '<i class="fas fa-plus"></i> Tambah Data',
+        action: function ( e, dt, node, config ) {
+          $('.modal-title').text('Tambah Data');
+          $('#myForm').attr('action', "<?= site_url('checklist/tambah/ac') ?>");
+          $('#input_id_checklist_ac').val('');
+          $('#input_ruangan').val('');
+          $('#input_sts_ac_pagi').val('');
+          $('#input_temp_pagi').val('');
+          $('#input_pic_pagi').val('');
+          $('#input_keterangan_pagi').val('');
+          $('#input_sts_ac_malam').val('');
+          $('#input_temp_malam').val('');
+          $('#input_pic_malam').val('');
+          $('#input_keterangan_malam').val('');
+          $('#myModal').modal('show');
+        }
+      }]
+    } );
+
+    $('#inputBulan').on('change', function() {
+      tampil_data_ac(this.value, $('#inputTahun').val(), $('#inputRuangan').val());
+    });
+
+    $('#inputTahun').on('change', function() {
+      tampil_data_ac($('#inputBulan').val(), this.value, $('#inputRuangan').val());
+    });
+
+    $('#inputRuangan').on('change', function() {
+      tampil_data_ac($('#inputBulan').val(), $('#inputTahun').val(), this.value);
+    });
+
+    function tampil_data_ac(bulan, tahun, idRuangan){
+      $.ajax({
+        type  : 'ajax',
+        url   : '<?php echo site_url()?>/checklist/ac_list/'+bulan+'/'+tahun+'/'+idRuangan,
+        async : false,
+        dataType : 'json',
+        success : function(data){
+          var html = '';
+          var i;
+          for(i=0; i<data.length; i++){
+            html += '<tr>'+
+            '<td>'+moment(data[i].tanggal).format('DD/MM/YYYY')+'</td>'+
+            '<td class="text-center">'+data[i].sts_ac_pagi+'</td>'+
+            '<td class="text-center">'+data[i].temp_pagi+'</td>'+
+            '<td>'+data[i].pic_pagi+'</td>'+
+            '<td>'+data[i].keterangan_pagi+'</td>'+
+            '<td class="text-center">'+data[i].sts_ac_malam+'</td>'+
+            '<td class="text-center">'+data[i].temp_malam+'</td>'+
+            '<td>'+data[i].pic_malam+'</td>'+
+            '<td>'+data[i].keterangan_malam+'</td>'+
+            '<td><button id="btnEdit" class="btn btn-warning" value="'+data[i].id_checklist_ac+'">Edit</button> <button id="btnHapus" class="btn btn-danger" value="'+data[i].id_checklist_ac+'">Hapus</button></td>'+
+            '</tr>';
           }
-        }]
-      } );
-
-      $('#inputBulan').on('change', function() {
-        tampil_data_ac(this.value, $('#inputTahun').val());
+          $('#show_data').html(html);
+        }
       });
+    }
 
-      $('#inputTahun').on('change', function() {
-        tampil_data_ac($('#inputBulan').val(), this.value);
+    $('#show_data').on('click','#btnEdit',function(){
+      $.ajax({
+        type     : 'GET',
+        url      : '<?php echo site_url()?>/checklist/ac_list/nope/nope/nope/'+this.value,
+        dataType : 'json',
+        success : function(data){
+          $('#input_id_checklist_ac').val(data[0].id_checklist_ac);
+          $('#input_ruangan').val(data[0].id_ruangan);
+          $('#input_sts_ac_pagi').val(data[0].sts_ac_pagi);
+          $('#input_temp_pagi').val(data[0].temp_pagi);
+          $('#input_pic_pagi').val(data[0].pic_pagi);
+          $('#input_keterangan_pagi').val(data[0].keterangan_pagi);
+          $('#input_sts_ac_malam').val(data[0].sts_ac_malam);
+          $('#input_temp_malam').val(data[0].temp_malam);
+          $('#input_pic_malam').val(data[0].pic_malam);
+          $('#input_keterangan_malam').val(data[0].keterangan_malam);
+        }
       });
+      $('.modal-title').text('Edit Data');
+      $('#myForm').attr('action', "<?= site_url('checklist/edit/ac') ?>");
+      $('#myModal').modal('show');
+    });
 
-      function tampil_data_ac(bulan, tahun){
-        $.ajax({
-          type  : 'ajax',
-          url   : '<?php echo site_url()?>/checklist/ac_list/'+bulan+'/'+tahun,
-          async : false,
-          dataType : 'json',
-          success : function(data){
-            var html = '';
-            var i;
-            for(i=0; i<data.length; i++){
-              html += '<tr>'+
-              '<td>'+moment(data[i].tanggal).format('DD/MM/YYYY')+'</td>'+
-              '<td>'+data[i].sts_ac_pagi+'</td>'+
-              '<td>'+data[i].temp_pagi+'</td>'+
-              '<td>'+data[i].pic_pagi+'</td>'+
-              '<td>'+data[i].keterangan_pagi+'</td>'+
-              '<td>'+data[i].sts_ac_malam+'</td>'+
-              '<td>'+data[i].temp_malam+'</td>'+
-              '<td>'+data[i].pic_malam+'</td>'+
-              '<td>'+data[i].keterangan_malam+'</td>'+
-              '<td><button id="btnEdit" class="btn btn-warning" value="'+data[i].id_checklist_ac+'">Edit</button> <button id="btnHapus" class="btn btn-danger" value="'+data[i].id_checklist_ac+'">Hapus</button></td>'+
-              '</tr>';
-            }
-            $('#show_data').html(html);
-          }
-        });
-      }
-
-      $('#show_data').on('click','#btnEdit',function(){
-        $.ajax({
-          type     : 'GET',
-          url      : '<?php echo site_url()?>/checklist/ac_list/nope/nope/'+this.value,
-          dataType : 'json',
-          success : function(data){
-            $('#input_id_checklist_ac').val(data[0].id_checklist_ac);
-            $('#input_ruangan').val(data[0].ruangan);
-            $('#input_sts_ac_pagi').val(data[0].sts_ac_pagi);
-            $('#input_temp_pagi').val(data[0].temp_pagi);
-            $('#input_pic_pagi').val(data[0].pic_pagi);
-            $('#input_keterangan_pagi').val(data[0].keterangan_pagi);
-            $('#input_sts_ac_malam').val(data[0].sts_ac_malam);
-            $('#input_temp_malam').val(data[0].temp_malam);
-            $('#input_pic_malam').val(data[0].pic_malam);
-            $('#input_keterangan_malam').val(data[0].keterangan_malam);
-          }
-        });
-        $('.modal-title').text('Edit Data');
-        $('#myForm').attr('action', "<?= site_url('checklist/edit/ac') ?>");
-        $('#myModal').modal('show');
-      });
-
-      $('#show_data').on('click','#btnHapus',function(){
+    $('#show_data').on('click','#btnHapus',function(){
+      if (confirm("Yakin akan menghapus data yang dipilih?")) {
         window.location.href = "<?= site_url('checklist/hapus/ac/') ?>"+this.value;
-        return false;
-      });
-    } );
-  } else if ('<?= $this->uri->segment(2) ?>' == 'ups') {
-    $(document).ready( function () {
-      tampil_data_ups($('#inputBulan').val(), $('#inputTahun').val());
-
-      $('#myTable').DataTable( {
-        responsive: true,
-        dom: 'Bfrtip',
-        buttons: [{
-          text: '<i class="fas fa-plus"></i> Tambah Data',
-          upstion: function ( e, dt, node, config ) {
-            $('.modal-title').text('Tambah Data');
-            $('#myForm').attr('upstion', "<?= site_url('checklist/tambah/ups') ?>");
-            $('#input_id_checklist_ups').val('');
-            $('#input_ruangan').val('');
-            $('#input_sts_ups_pagi').val('');
-            $('#input_temp_pagi').val('');
-            $('#input_pic_pagi').val('');
-            $('#input_keterangan_pagi').val('');
-            $('#input_sts_ups_malam').val('');
-            $('#input_temp_malam').val('');
-            $('#input_pic_malam').val('');
-            $('#input_keterangan_malam').val('');
-            $('#myModal').modal('show');
-          }
-        }]
-      } );
-
-      $('#inputBulan').on('change', function() {
-        tampil_data_ups(this.value, $('#inputTahun').val());
-      });
-
-      $('#inputTahun').on('change', function() {
-        tampil_data_ups($('#inputBulan').val(), this.value);
-      });
-
-      function tampil_data_ups(bulan, tahun){
-        $.ajax({
-          type  : 'ajax',
-          url   : '<?php echo site_url()?>/checklist/ups_list/'+bulan+'/'+tahun,
-          async : false,
-          dataType : 'json',
-          success : function(data){
-            var html = '';
-            var i;
-            for(i=0; i<data.length; i++){
-              html += '<tr>'+
-              '<td>'+moment(data[i].tanggal).format('DD/MM/YYYY')+'</td>'+
-              '<td>'+data[i].sts_ups_pagi+'</td>'+
-              '<td>'+data[i].temp_pagi+'</td>'+
-              '<td>'+data[i].pic_pagi+'</td>'+
-              '<td>'+data[i].keterangan_pagi+'</td>'+
-              '<td>'+data[i].sts_ups_malam+'</td>'+
-              '<td>'+data[i].temp_malam+'</td>'+
-              '<td>'+data[i].pic_malam+'</td>'+
-              '<td>'+data[i].keterangan_malam+'</td>'+
-              '<td><button id="btnEdit" class="btn btn-warning" value="'+data[i].id_checklist_ups+'">Edit</button> <button id="btnHapus" class="btn btn-danger" value="'+data[i].id_checklist_ups+'">Hapus</button></td>'+
-              '</tr>';
-            }
-            $('#show_data').html(html);
-          }
-        });
       }
+    });
+  } );
+} else if ('<?= $this->uri->segment(2) ?>' == 'ups') {
+  $(document).ready( function () {
+    tampil_data_ups($('#inputBulan').val(), $('#inputTahun').val());
 
-      $('#show_data').on('click','#btnEdit',function(){
-        $.ajax({
-          type     : 'GET',
-          url      : '<?php echo site_url()?>/checklist/ups_list/nope/nope/'+this.value,
-          dataType : 'json',
-          success : function(data){
-            $('#input_id_checklist_ups').val(data[0].id_checklist_ups);
-            $('#input_ruangan').val(data[0].ruangan);
-            $('#input_sts_ups_pagi').val(data[0].sts_ups_pagi);
-            $('#input_temp_pagi').val(data[0].temp_pagi);
-            $('#input_pic_pagi').val(data[0].pic_pagi);
-            $('#input_keterangan_pagi').val(data[0].keterangan_pagi);
-            $('#input_sts_ups_malam').val(data[0].sts_ups_malam);
-            $('#input_temp_malam').val(data[0].temp_malam);
-            $('#input_pic_malam').val(data[0].pic_malam);
-            $('#input_keterangan_malam').val(data[0].keterangan_malam);
-          }
-        });
-        $('.modal-title').text('Edit Data');
-        $('#myForm').attr('upstion', "<?= site_url('checklist/edit/ups') ?>");
-        $('#myModal').modal('show');
-      });
-
-      $('#show_data').on('click','#btnHapus',function(){
-        window.location.href = "<?= site_url('checklist/hapus/ups/') ?>"+this.value;
-        return false;
-      });
+    $('#myTable').DataTable( {
+      responsive: true,
+      dom: 'Bfrtip',
+      buttons: [{
+        text: '<i class="fas fa-plus"></i> Tambah Data',
+        action: function ( e, dt, node, config ) {
+          $('.modal-title').text('Tambah Data');
+          $('#myForm').attr('action', "<?= site_url('checklist/tambah/ups') ?>");
+          $('#input_id_checklist_ups').val('');
+          $('#input_lokasi').val('');
+          $('#input_merk').val('');
+          $('#input_type').val('');
+          $('#input_input').val('');
+          $('#input_output').val('');
+          $('#input_baterai_time').val('');
+          $('#input_petugas').val('');
+          $('#input_keterangan').val('');
+          $('#myModal').modal('show');
+        }
+      }]
     } );
-  }
+
+    $('#inputBulan').on('change', function() {
+      tampil_data_ups(this.value, $('#inputTahun').val());
+    });
+
+    $('#inputTahun').on('change', function() {
+      tampil_data_ups($('#inputBulan').val(), this.value);
+    });
+
+    function tampil_data_ups(bulan, tahun){
+      $.ajax({
+        type  : 'ajax',
+        url   : '<?php echo site_url()?>/checklist/ups_list/'+bulan+'/'+tahun,
+        async : false,
+        dataType : 'json',
+        success : function(data){
+          var html = '';
+          var i;
+          for(i=0; i<data.length; i++){
+            html += '<tr>'+
+            '<td class="text-center">'+moment(data[i].tanggal).format('DD/MM/YYYY')+'</td>'+
+            '<td>'+data[i].lokasi+'</td>'+
+            '<td>'+data[i].merk+'</td>'+
+            '<td>'+data[i].type+'</td>'+
+            '<td class="text-center">'+data[i].input+'</td>'+
+            '<td class="text-center">'+data[i].output+'</td>'+
+            '<td class="text-center">'+data[i].baterai_time+'</td>'+
+            '<td>'+data[i].petugas+'</td>'+
+            '<td>'+data[i].keterangan+'</td>'+
+            '<td><button id="btnEdit" class="btn btn-warning" value="'+data[i].id_checklist_ups+'">Edit</button> <button id="btnHapus" class="btn btn-danger" value="'+data[i].id_checklist_ups+'">Hapus</button></td>'+
+            '</tr>';
+          }
+          $('#show_data').html(html);
+        }
+      });
+    }
+
+    $('#show_data').on('click','#btnEdit',function(){
+      $.ajax({
+        type     : 'GET',
+        url      : '<?php echo site_url()?>/checklist/ups_list/nope/nope/'+this.value,
+        dataType : 'json',
+        success : function(data){
+          $('#input_id_checklist_ups').val(data[0].id_checklist_ups);
+          $('#input_lokasi').val(data[0].lokasi);
+          $('#input_merk').val(data[0].merk);
+          $('#input_type').val(data[0].type);
+          $('#input_input').val(data[0].input);
+          $('#input_output').val(data[0].output);
+          $('#input_baterai_time').val(data[0].baterai_time);
+          $('#input_petugas').val(data[0].petugas);
+          $('#input_keterangan').val(data[0].keterangan);
+        }
+      });
+      $('.modal-title').text('Edit Data');
+      $('#myForm').attr('action', "<?= site_url('checklist/edit/ups') ?>");
+      $('#myModal').modal('show');
+    });
+
+    $('#show_data').on('click','#btnHapus',function(){
+      // return false;
+      // var choice = confirm($(this).attr('data-confirm'));
+
+      if (confirm("Yakin akan menghapus data yang dipilih?")) {
+        window.location.href = "<?= site_url('checklist/hapus/ups/') ?>"+this.value;
+      }
+    });
+  } );
+} else if ('<?= $this->uri->segment(2) ?>' == 'cctv') {
+  $(document).ready( function () {
+    tampil_data_cctv($('#inputBulan').val(), $('#inputTahun').val(), $('#inputShift').val());
+
+    $('#myTable').DataTable( {
+      responsive: true,
+      dom: 'Bfrtip',
+      buttons: [{
+        text: '<i class="fas fa-plus"></i> Tambah Data',
+        action: function ( e, dt, node, config ) {
+          $('.modal-title').text('Tambah Data');
+          $('#myForm').attr('action', "<?= site_url('checklist/tambah/cctv') ?>");
+          $('#input_id_checklist_cctv').val('');
+          $('#input_lokasi').val('');
+          $('#input_merk').val('');
+          $('#input_type').val('');
+          $('#input_input').val('');
+          $('#input_output').val('');
+          $('#input_baterai_time').val('');
+          $('#input_petugas').val('');
+          $('#input_keterangan').val('');
+          $('#myModal').modal('show');
+        }
+      }]
+    } ).responsive.recalc();
+
+    $('#inputBulan').on('change', function() {
+      tampil_data_cctv(this.value, $('#inputTahun').val());
+    });
+
+    $('#inputTahun').on('change', function() {
+      tampil_data_cctv($('#inputBulan').val(), this.value);
+    });
+
+    function tampil_data_cctv(bulan, tahun, shift){
+      $.ajax({
+        type  : 'ajax',
+        url   : '<?php echo site_url()?>/checklist/cctv_list/'+bulan+'/'+tahun+'/'+shift+'/',
+        async : false,
+        dataType : 'json',
+        success : function(data){
+          // alert(data['data2'][0][0].tanggal);
+          var html = '';
+          var i;
+          for(i=0; i<data['data1'].length; i++){
+            html += '<tr>'+
+            '<td class="text-center">'+(i+1)+'</td>'+
+            '<td class="text-center">'+data['data1'][i].lantai+'</td>'+
+            '<td>'+data['data1'][i].nama_ruangan+'</td>';
+            for(var a = 1; a<=31; a++){
+              if (data['data2'][i].length > 0) {
+                for(var b = 0, length3 = data['data2'][i].length; b < length3; b++){
+                  if (a == data['data2'][i][b].tanggal) {
+                    html += '<td class="text-center">'+((data['data2'][i][b].kondisi == 'baik')?'&#x2713;':'x')+'</td>';
+                  }
+                }
+              } else {
+                html += '<td class="text-center"></td>';
+              }
+            }
+            html += '<td>'+data['data1'][i].keterangan+'</td>'+
+            '<td><button id="btnEdit" class="btn btn-warning" value="'+data['data1'][i].id_checklist_cctv+'">Edit</button> <button id="btnHapus" class="btn btn-danger" value="'+data['data1'][i].id_checklist_cctv+'">Hapus</button></td>'+
+            '</tr>';
+          }
+          $('#show_data').html(html);
+        }
+      });
+    }
+
+    $('#show_data').on('click','#btnEdit',function(){
+      $.ajax({
+        type     : 'GET',
+        url      : '<?php echo site_url()?>/checklist/cctv_list/nope/nope/'+this.value,
+        dataType : 'json',
+        success : function(data){
+          $('#input_id_checklist_cctv').val(data[0].id_checklist_cctv);
+          $('#input_lokasi').val(data[0].lokasi);
+          $('#input_merk').val(data[0].merk);
+          $('#input_type').val(data[0].type);
+          $('#input_input').val(data[0].input);
+          $('#input_output').val(data[0].output);
+          $('#input_baterai_time').val(data[0].baterai_time);
+          $('#input_petugas').val(data[0].petugas);
+          $('#input_keterangan').val(data[0].keterangan);
+        }
+      });
+      $('.modal-title').text('Edit Data');
+      $('#myForm').attr('action', "<?= site_url('checklist/edit/cctv') ?>");
+      $('#myModal').modal('show');
+    });
+
+    $('#show_data').on('click','#btnHapus',function(){
+      // return false;
+      // var choice = confirm($(this).attr('data-confirm'));
+
+      if (confirm("Yakin akan menghapus data yang dipilih?")) {
+        window.location.href = "<?= site_url('checklist/hapus/cctv/') ?>"+this.value;
+      }
+    });
+  } );
+}
 </script>

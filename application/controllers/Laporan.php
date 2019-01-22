@@ -7,6 +7,9 @@ class Laporan extends CI_Controller {
         parent::__construct();
         $this->load->library('pdf');
         $this->load->model('DataPC');
+        $this->load->model('DataAC');
+        $this->load->model('DataUPS');
+        $this->load->model('DataRuangan');
     }
 
     function lol()
@@ -14,12 +17,14 @@ class Laporan extends CI_Controller {
         $this->load->view('Laporan/pc');
     }
     
-    function index(){
+    function pc()
+    {
         $bulan = $this->input->post('bulan');
-        $shift = $this->input->post('shift');
+        $tahun = $this->input->post('tahun');
+        $shift = $this->input->post('shiftForm');
         $bagian = $this->input->post('bagian');
 
-        $data_PC = $this->DataPC->get($bulan);
+        $data_PC = $this->DataPC->get($bulan,$tahun,$shift);
 
         $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
         $pdf->SetTitle('LAPORAN PENGECEKAN & CHECKLIST '.$bagian);
@@ -29,7 +34,7 @@ class Laporan extends CI_Controller {
         $pdf->setFooterMargin(20);
         $pdf->SetAutoPageBreak(true);
         // $pdf->SetHeaderData(base_url('assets/gambar/ish.jpg'), PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 009', PDF_HEADER_STRING);
-        $pdf->SetAuthor('Author');
+        $pdf->SetAuthor('Fahrul');
         $pdf->SetDisplayMode('real', 'default');
         $pdf->AddPage();
         $pdf->Image(base_url('assets/gambar/ish.jpg'), '', 15, 40, 15);
@@ -38,7 +43,7 @@ class Laporan extends CI_Controller {
         $judul='
             <div style="text-align:center;line-height: normal">
                 <h3 style="margin: 0">FORM CLEANING & CHECKLIST '.$bagian.'</h3>
-                <h4 style="margin: 0">Bulan : '.date('F',mktime(0, 0, 0, $bulan, 10)).'</h4>
+                <h4 style="margin: 0">Bulan : '.date('F',mktime(0, 0, 0, $bulan, 10)).' '.$tahun.'</h4>
                 <h4 style="margin: 0">Shift : '.$shift.'</h4>
             </div>
         ';
@@ -129,6 +134,164 @@ class Laporan extends CI_Controller {
                       <td>Casing</td>
                     </tr>
                   </table>
+                </td>
+                <td width="50%" style="text-align: center">
+                  SPV IT CC Malang <br>
+                  PT. Infomedia Nusantara
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  (Firman Hidayat)
+                </td>
+              </tr>
+            </table>
+        ';
+        $pdf->writeHTML($ttd, true, false, false, false, '');
+        $pdf->Output('Laporan '.$bagian.'.pdf', 'I');
+    }
+
+    function ac()
+    {
+        $bulan = $this->input->post('bulan');
+        $tahun = $this->input->post('tahun');
+        $id_ruangan = $this->input->post('id_ruangan');
+        $ruangan = $this->DataRuangan->get('','',$id_ruangan);
+        $bagian = $this->input->post('bagian');
+
+        $data_AC = $this->DataAC->get($bulan,$tahun,$id_ruangan);
+
+        $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetTitle('SCHEDULE CHECKLIST '.$bagian);
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->SetTopMargin(5);
+        $pdf->setFooterMargin(20);
+        $pdf->SetAutoPageBreak(true);
+        // $pdf->SetHeaderData(base_url('assets/gambar/ish.jpg'), PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 009', PDF_HEADER_STRING);
+        $pdf->SetAuthor('Fahrul');
+        $pdf->SetDisplayMode('real', 'default');
+        $pdf->AddPage();
+        $pdf->Image(base_url('assets/gambar/ish.jpg'), '', 15, 40, 15);
+        // $pdf->Write();
+        $i=0;
+        $judul='
+            <div style="text-align:center;line-height: normal">
+                <h3 style="margin: 0">CHECKLIST '.$bagian.'</h3>
+                <h4 style="margin: 0">Bulan : '.date('F',mktime(0, 0, 0, $bulan, 10)).' '.$tahun.'</h4>
+                <h4 style="margin: 0">Ruangan : '.$ruangan[0]->nama_ruangan.' lantai '.$ruangan[0]->lantai.'</h4>
+            </div>
+        ';
+        $pdf->writeHTML($judul, true, false, false, false, '');
+        $pdf->SetFont('dejavusans', '', 10);
+        $tbl = '
+        <table border="1" cellspacing="1" cellpadding="2">
+            <tr style="text-align:center;vertical-align:middle">
+                <th rowspan="2" width="12%">Tanggal</th>
+                <th colspan="4">Jam 08.00</th>
+                <th colspan="4">Jam 20.00</th>
+            </tr>
+            <tr style="text-align:center">
+                <th>Sts AC</th>
+                <th>Temp</th>
+                <th>PIC</th>
+                <th>Keterangan</th>
+                <th>Sts AC</th>
+                <th>Temp</th>
+                <th>PIC</th>
+                <th>Keterangan</th>
+            </tr>
+        ';
+        foreach ($data_AC as $val) {
+            $tbl.='
+                <tr>
+                    <td style="text-align:center">'.date('d-m-Y',strtotime($val->tanggal)).'</td>
+                    <td style="text-align:center">'.$val->sts_ac_pagi.'</td>
+                    <td style="text-align:center">'.$val->temp_pagi.'</td>
+                    <td>'.$val->pic_pagi.'</td>
+                    <td>'.$val->keterangan_pagi.'</td>
+                    <td style="text-align:center">'.$val->sts_ac_malam.'</td>
+                    <td style="text-align:center">'.$val->temp_malam.'</td>
+                    <td>'.$val->pic_malam.'</td>
+                    <td>'.$val->keterangan_malam.'</td>
+                </tr>
+            ';
+        }
+        $tbl.='</table>';
+
+        $pdf->writeHTML($tbl, true, false, false, false, '');
+        $pdf->Output('Laporan '.$bagian.'.pdf', 'I');
+    }
+
+    function ups()
+    {
+        $bulan = $this->input->post('bulan');
+        $tahun = $this->input->post('tahun');
+        $bagian = $this->input->post('bagian');
+
+        $data_UPS = $this->DataUPS->get($bulan,$tahun);
+
+        $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetTitle('SCHEDULE CHECKLIST '.$bagian);
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->SetTopMargin(5);
+        $pdf->setFooterMargin(20);
+        $pdf->SetAutoPageBreak(true);
+        // $pdf->SetHeaderData(base_url('assets/gambar/ish.jpg'), PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 009', PDF_HEADER_STRING);
+        $pdf->SetAuthor('Fahrul');
+        $pdf->SetDisplayMode('real', 'default');
+        $pdf->AddPage();
+        $pdf->Image(base_url('assets/gambar/ish.jpg'), '', 15, 40, 15);
+        // $pdf->Write();
+        $i=0;
+        $judul='
+            <div style="text-align:center;line-height: normal">
+                <h3 style="margin: 0">FORM CLEANING & CHECKLIST '.$bagian.'</h3>
+                <h4 style="margin: 0">PERIODE : '.date('F',mktime(0, 0, 0, $bulan, 10)).' '.$tahun.'</h4>
+            </div>
+        ';
+        $pdf->writeHTML($judul, true, false, false, false, '');
+        $pdf->SetFont('dejavusans', '', 10);
+        $tbl = '
+        <table border="1" cellspacing="1" cellpadding="2">
+            <tr style="text-align:center;vertical-align:middle">
+                <th width="12%">Tanggal</th>
+                <th>Lokasi</th>
+                <th>Merk</th>
+                <th>Type</th>
+                <th>Input (KVA)</th>
+                <th>Output (KVA)</th>
+                <th>Baterai Time (Menit)</th>
+                <th>Petugas</th>
+                <th width="12%">Keterangan</th>
+            </tr>
+        ';
+        foreach ($data_UPS as $val) {
+            $tbl.='
+                <tr>
+                    <td style="text-align:center">'.date('d-m-Y',strtotime($val->tanggal)).'</td>
+                    <td>'.$val->lokasi.'</td>
+                    <td>'.$val->merk.'</td>
+                    <td>'.$val->type.'</td>
+                    <td style="text-align:center">'.$val->input.'</td>
+                    <td style="text-align:center">'.$val->output.'</td>
+                    <td style="text-align:center">'.$val->baterai_time.'</td>
+                    <td>'.$val->petugas.'</td>
+                    <td>'.$val->keterangan.'</td>
+                </tr>
+            ';
+        }
+        $tbl.='</table>';
+
+        $pdf->writeHTML($tbl, true, false, false, false, '');
+
+        $ttd = '
+            <br>
+            <table width="100%">
+              <tr>
+                <td width="50%">
                 </td>
                 <td width="50%" style="text-align: center">
                   SPV IT CC Malang <br>

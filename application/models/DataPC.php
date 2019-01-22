@@ -3,13 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class DataPC extends CI_Model {
 
-	public function get($byBulan = '', $byTahun = '', $byID = '')
+	public function get($byBulan = '', $byTahun = '', $byShift = '', $byID = '')
 	{
 		if ($byBulan != '') {
 			$this->db->where('MONTH(tanggal)', $byBulan);
 		}
 		if ($byTahun != '') {
 			$this->db->where('YEAR(tanggal)', $byTahun);
+		}
+		if ($byShift != '') {
+			$this->db->where('shift', $byShift);
 		}
 		if ($byID != '') {
 			$this->db->where('id_checklist_pc', $byID);
@@ -33,6 +36,7 @@ class DataPC extends CI_Model {
 			'id_checklist_pc'	=> $this->input->post('id_checklist_pc'),
 			'pc_id'				=> $this->input->post('pc_id'),
 			'tanggal'			=> date('Y-m-d'),
+			'shift'				=> $this->input->post('shift'),
 			'nama_petugas'		=> $this->input->post('nama_petugas'),
 			'M1'				=> $M1,
 			'M2'				=> $M2,
@@ -68,7 +72,7 @@ class DataPC extends CI_Model {
 
 		$data = array(
 			'pc_id'				=> $this->input->post('pc_id'),
-			'tanggal'			=> date('Y-m-d'),
+			'shift'				=> $this->input->post('shift'),
 			'nama_petugas'		=> $this->input->post('nama_petugas'),
 			'M1'				=> $M1,
 			'M2'				=> $M2,

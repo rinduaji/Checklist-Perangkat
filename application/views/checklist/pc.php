@@ -14,7 +14,7 @@
     <div class="isi">
       <!-- <a href="<?= site_url('laporan'); ?>" class="btn btn-primary">Print</a> -->
       <!-- <button id="btnTambah" onclick="tambah()" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Data</button> -->
-      <?= form_open('laporan'); ?>
+      <?= form_open('laporan/pc'); ?>
       <button type="submit" class="btn btn-primary">Print</button>
       <input type="hidden" name="bagian" value="PC">
       <h1>CLEANING DAN CHECKLIST PC</h1>
@@ -32,32 +32,39 @@
         </select>
       </div>
       <div class="text-center">
-        <div class="radio">
+        <div class="radio" id="inputShiftForm">
           Shift :
           <label>
-            <input type="radio" name="shift" id="inputShift" value="Pagi" checked="checked">
+            <input type="radio" name="shiftForm" value="pagi" checked="checked">
             Pagi
           </label>
           <label>
-            <input type="radio" name="shift" id="inputShift" value="Malam">
+            <input type="radio" name="shiftForm" value="malam">
             Malam
           </label>
         </div>
       </div>
       <?= form_close(); ?>
       <table id="myTable" class="table table-bordered table-hover" width="100%">
-        <thead>
-          <tr class="text-center">
-            <th>No. PC ID</th>
-            <th>Tanggal</th>
-            <th>Nama Petugas</th>
+        <thead class="text-center">
+          <tr>
+            <th rowspan="3">No. PC ID</th>
+            <th rowspan="3">Tanggal</th>
+            <th rowspan="3">Nama Petugas</th>
+            <th colspan="3">Aktifitas</th>
+            <th colspan="2">Nama dan Paraf</th>
+            <th rowspan="3">Keterangan</th>
+            <th rowspan="3">Aksi</th>
+          </tr>
+          <tr>
+            <th colspan="3">Cleaning Perangkat</th>
+            <th rowspan="2">User / TL</th>
+            <th rowspan="2">IT</th>
+          </tr>
+          <tr>
             <th>M1</th>
             <th>M2</th>
             <th>CPU</th>
-            <th>User / TL</th>
-            <th>IT</th>
-            <th>Keterangan</th>
-            <th>Aksi</th>
           </tr>
         </thead>
         <tbody id="show_data">
@@ -91,6 +98,31 @@
             <?= form_open('', 'id="myForm"'); ?>
             <input id="input_id_checklist_pc" type="hidden" name="id_checklist_pc" value="">
             <table class="table table-hover">
+              <tr class="form-group">
+                <td>
+                  Tanggal
+                </td>
+                <td>
+                  <input id="input_tanggal" type="text" class="form-control" placeholder="PC ID" name="tanggal" readonly>
+                </td>
+              </tr>
+              <tr class="form-group">
+                <td>
+                  Shift
+                </td>
+                <td>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="shift" id="input_shift" value="pagi">
+                      Pagi
+                    </label>
+                    <label>
+                      <input type="radio" name="shift" id="input_shift" value="malam">
+                      Malam
+                    </label>
+                  </div>
+                </td>
+              </tr>
               <tr class="form-group">
                 <td>
                   No. PC ID

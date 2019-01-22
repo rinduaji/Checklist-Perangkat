@@ -6,24 +6,21 @@
 </div>
 <br>
 <table border="1" cellspacing="1" cellpadding="2">
-  <tr style="text-align:center">
-    <th rowspan="3">No. PC ID</th>
-    <th rowspan="3">Tanggal</th>
-    <th rowspan="3">Nama Petugas</th>
-    <th colspan="3">Aktivitas</th>
-    <th colspan="2">Nama dan Paraf</th>
-    <th rowspan="3">Keterangan</th>
+  <tr style="text-align:center;vertical-align:middle">
+    <th rowspan="2" width="12%">Tanggal</th>
+    <th colspan="4">Jam 08.00</th>
+    <th colspan="4">Jam 20.00</th>
   </tr>
-  <tr style="text-align:center">
-    <th colspan="3">Cleaning Perangkat</th>
-    <th rowspan="2">User / TL</th>
-    <th rowspan="2">IT</th>
-  </tr>
-  <tr style="text-align:center">
-    <th>M1</th>
-    <th>M2</th>
-    <th>CPU</th>
-  </tr>
+  <tr style="text-align:center"">
+  <th>Sts AC</th>
+  <th>Temp</th>
+  <th>PIC</th>
+  <th width="12%">Keterangan</th>
+  <th>Sts AC</th>
+  <th>Temp</th>
+  <th>PIC</th>
+  <th width="12%">Keterangan</th>
+</tr>
 </table>
 <br>
 <table>

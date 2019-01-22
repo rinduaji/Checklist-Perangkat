@@ -19,12 +19,6 @@ class DataUPS extends CI_Model {
 
 	public function insert()
 	{
-		// if (!is_null($checklist_ups = $this->db->select_max('id_checklist_ups')->get('checklist_ups')->result())) {
-		// 	$id_checklist_ups = $checklist_ups[0]->id_checklist_ups + 1;
-		// } else {
-		// 	$id_checklist_ups = 1;
-		// }
-
 		$data = array(
 			'id_checklist_ups'	=> $this->input->post('id_checklist_ups'),
 			'tanggal'			=> date('Y-m-d'),
@@ -38,8 +32,8 @@ class DataUPS extends CI_Model {
 			'keterangan'		=> $this->input->post('keterangan')
 		);
 
-		echo var_dump($data);
-		die();
+		// echo var_dump($data);
+		// die();
 
 		if ($this->db->insert('checklist_ups', $data)) {
 			$flashArray = array(
@@ -72,8 +66,8 @@ class DataUPS extends CI_Model {
 			'keterangan'		=> $this->input->post('keterangan')
 		);
 
-		echo var_dump($data);
-		die();
+		// echo var_dump($data);
+		// die();
 
 		$this->db->where('id_checklist_ups', $this->input->post('id_checklist_ups'));
 
