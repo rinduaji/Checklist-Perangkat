@@ -14,9 +14,9 @@
     <div class="isi">
       <!-- <a href="<?= site_url('laporan'); ?>" class="btn btn-primary">Print</a> -->
       <!-- <button id="btnTambah" onclick="tambah()" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Data</button> -->
-      <?= form_open('laporan/cctv'); ?>
+      <?= form_open('laporan'); ?>
       <button type="submit" class="btn btn-primary">Print</button>
-      <input type="hidden" name="bagian" value="CCTV">
+      <input type="hidden" name="bagian" value="PC">
       <h1>Laporan Pengecekan CCTV Area Operasional</h1>
       <div class="text-center">
         Periode :

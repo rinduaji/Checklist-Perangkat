@@ -9,6 +9,7 @@ class Laporan extends CI_Controller {
         $this->load->model('DataPC');
         $this->load->model('DataAC');
         $this->load->model('DataUPS');
+        $this->load->model('DataCCTV');
         $this->load->model('DataRuangan');
     }
 
@@ -302,6 +303,112 @@ class Laporan extends CI_Controller {
                   <br>
                   <br>
                   (Firman Hidayat)
+                </td>
+              </tr>
+            </table>
+        ';
+        $pdf->writeHTML($ttd, true, false, false, false, '');
+        $pdf->Output('Laporan '.$bagian.'.pdf', 'I');
+    }
+
+    function cctv()
+    {
+        $bulan = $this->input->post('bulan');
+        $tahun = $this->input->post('tahun');
+        $shift = $this->input->post('shift');
+        $bagian = $this->input->post('bagian');
+
+        $data_CCTV = $this->DataCCTV->getCCTV($bulan,$tahun,$shift);
+
+        $pdf = new TCPDF('L', 'mm', 'legal', true, 'UTF-8', false);
+        $pdf->SetTitle('LAPORAN PENGECEKAN '.$bagian.' AREA OPERASIONAL');
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->SetTopMargin(5);
+        $pdf->setFooterMargin(20);
+        $pdf->SetAutoPageBreak(true);
+        // $pdf->SetHeaderData(base_url('assets/gambar/ish.jpg'), PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 009', PDF_HEADER_STRING);
+        $pdf->SetAuthor('Fahrul');
+        $pdf->SetDisplayMode('real', 'default');
+        $pdf->AddPage();
+        $pdf->Image(base_url('assets/gambar/ish.jpg'), '', 15, 40, 15);
+        // $pdf->Write();
+        $i=0;
+        $judul='
+            <div style="text-align:center;line-height: normal">
+                <h4 style="margin: 0">LAPORAN PENGECEKAN '.$bagian.' AREA OPERASIONAL</h4>
+                <h4 style="margin: 0">PT. INFOMEDIA NUSATARA</h4>
+                <h4 style="margin: 0">JL. A YANI NO. 11 MALANG</h4>
+                <h4 style="margin: 0">PERIDODE : '.date('F',mktime(0, 0, 0, $bulan, 10)).' '.$tahun.'</h4>
+                <h4 style="margin: 0">SHIFT : '.$shift.'</h4>
+            </div>
+        ';
+        $pdf->writeHTML($judul, true, false, false, false, '');
+        $pdf->SetFont('dejavusans', '', 10);
+        $tbl = '
+        <table border="1" cellspacing="1" cellpadding="2">
+            <tr style="text-align:center;vertical-align:middle">
+                <th rowspan="2">NO</th>
+                <th rowspan="2">LANTAI</th>
+                <th rowspan="2">RUANG</th>
+                <th colspan="31">TANGGAL</th>
+                <th rowspan="2">KETERANGAN</th>
+            </tr>
+            <tr style="text-align:center">';
+        for ($i = 1; $i <= 31; $i++) {
+            $tbl .= '<th>'.$i.'</th>';
+        }
+        $loop = 0;
+        $no = 1;
+        $tbl .= '</tr>';
+        foreach ($data_CCTV as $key => $value) {
+            $tbl.='
+                <tr>';
+            if ($loop == 0 || $loop == 2 || $loop == 4) {
+                $tbl .= '<td rowspan="2" style="text-align:center">'.$no.'</td>';
+                $tbl .= '<td rowspan="2" style="text-align:center">'.$value->lantai.'</td>';
+                $no++;
+            }
+            $tbl.='
+                <td style="text-align:center">'.$value->nama_ruangan.'</td>';
+            for ($j = 1; $j <= 31; $j++) {
+                if ($j < 10) {
+                    $tgl = '0'.$j;
+                } else {
+                    $tgl = $j;
+                }
+                $kondisi = eval('return $value->'.('tgl'.$tgl).';');
+                $tbl .= '<td style="text-align:center">'.(($kondisi != '')?(($kondisi == 'baik')?'&#x2713;':'x'):' ').'</td>';
+            } 
+            $tbl.='
+                    <td>'.$value->keterangan.'</td>
+                </tr>
+            ';
+            $loop++;
+        }
+        $tbl.='</table>';
+
+        $pdf->writeHTML($tbl, true, false, false, false, '');
+
+        $ttd = '
+            <br>
+            <br>
+            <br>
+            <table width="100%">
+              <tr>
+                <td width="50%" style="text-align: center">
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  Security
+                </td>
+                <td width="50%" style="text-align: center">
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  Maintenance
                 </td>
               </tr>
             </table>

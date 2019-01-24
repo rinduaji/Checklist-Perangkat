@@ -119,15 +119,15 @@
               </td>
               <td>
                 Status AC
-                <select name="sts_ac_malam" id="input_sts_ac_malam" class="form-control" required>
+                <select name="sts_ac_malam" id="input_sts_ac_malam" class="form-control">
                   <option value="">---Pilih Status AC---</option>
                   <option value="ok">OK</option>
                   <option value="not ok">Not OK</option>
                 </select>
                 Temperature
-                <input id="input_temp_malam" type="number" class="form-control" placeholder="Temperature" name="temp_malam" required>
+                <input id="input_temp_malam" type="number" class="form-control" placeholder="Temperature" name="temp_malam">
                 PIC
-                <select name="pic_malam" id="input_pic_malam" class="form-control" required>
+                <select name="pic_malam" id="input_pic_malam" class="form-control">
                   <option value="">---Pilih Petugas---</option>
                   <?php foreach ($petugas as $val): ?>
                     <option value="<?= $val->nama_petugas ?>"><?= $val->nama_petugas ?></option>

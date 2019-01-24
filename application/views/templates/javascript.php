@@ -337,60 +337,61 @@
       responsive: true,
       dom: 'Bfrtip',
       buttons: [{
-        text: '<i class="fas fa-plus"></i> Tambah Data',
+        text: '<i class="fas fa-plus"></i> Tambah Checklist',
         action: function ( e, dt, node, config ) {
-          $('.modal-title').text('Tambah Data');
+          $('#formInsert').attr('hidden', false);
+          $('#formEditKeterangan').attr('hidden', true);
+          $('.modal-title').text('Tambah Checklist');
           $('#myForm').attr('action', "<?= site_url('checklist/tambah/cctv') ?>");
-          $('#input_id_checklist_cctv').val('');
-          $('#input_lokasi').val('');
-          $('#input_merk').val('');
-          $('#input_type').val('');
-          $('#input_input').val('');
-          $('#input_output').val('');
-          $('#input_baterai_time').val('');
-          $('#input_petugas').val('');
-          $('#input_keterangan').val('');
+          $('.formInsertCheck').attr('hidden', false);
+          $('.formEditCheck').attr('hidden', true);
+          $('#input_id_check_cctv').val('');
+          $('#input_tanggal').val('<?= date('d-m-Y') ?>');
+          $('#input_id_ruangan').val('');
+          $('#input_shift').val($('#inputShift').val());
           $('#myModal').modal('show');
         }
       }]
     } ).responsive.recalc();
 
     $('#inputBulan').on('change', function() {
-      tampil_data_cctv(this.value, $('#inputTahun').val());
+      tampil_data_cctv(this.value, $('#inputTahun').val(), $('#inputShift').val());
     });
 
     $('#inputTahun').on('change', function() {
-      tampil_data_cctv($('#inputBulan').val(), this.value);
+      tampil_data_cctv($('#inputBulan').val(), this.value, $('#inputShift').val());
+    });
+
+    $('#inputShift').on('change', function() {
+      tampil_data_cctv($('#inputBulan').val(), $('#inputTahun').val(), this.value);
     });
 
     function tampil_data_cctv(bulan, tahun, shift){
       $.ajax({
         type  : 'ajax',
-        url   : '<?php echo site_url()?>/checklist/cctv_list/'+bulan+'/'+tahun+'/'+shift+'/',
+        url   : '<?php echo site_url()?>/checklist/cctv_list/'+bulan+'/'+tahun+'/'+shift,
         async : false,
         dataType : 'json',
         success : function(data){
           // alert(data['data2'][0][0].tanggal);
           var html = '';
           var i;
-          for(i=0; i<data['data1'].length; i++){
+          for(i=0; i<data.length; i++){
             html += '<tr>'+
-            '<td class="text-center">'+(i+1)+'</td>'+
-            '<td class="text-center">'+data['data1'][i].lantai+'</td>'+
-            '<td>'+data['data1'][i].nama_ruangan+'</td>';
-            for(var a = 1; a<=31; a++){
-              if (data['data2'][i].length > 0) {
-                for(var b = 0, length3 = data['data2'][i].length; b < length3; b++){
-                  if (a == data['data2'][i][b].tanggal) {
-                    html += '<td class="text-center">'+((data['data2'][i][b].kondisi == 'baik')?'&#x2713;':'x')+'</td>';
-                  }
-                }
+            '<td class="text-center">'+data[i].lantai+'</td>'+
+            '<td>'+data[i].nama_ruangan+'</td>';
+            for(var j = 1; j <= 31; j++){
+              var tgl = '';
+              if (j < 10) {
+                tgl = '0'+j;
               } else {
-                html += '<td class="text-center"></td>';
+                tgl = j;
               }
+              var kondisi = eval('data[i].tgl'+tgl);
+              html += '<td class="text-center">'+((kondisi != '')?((kondisi == 'baik')?'&#x2713;':'x'):' ')+'</td>';
             }
-            html += '<td>'+data['data1'][i].keterangan+'</td>'+
-            '<td><button id="btnEdit" class="btn btn-warning" value="'+data['data1'][i].id_checklist_cctv+'">Edit</button> <button id="btnHapus" class="btn btn-danger" value="'+data['data1'][i].id_checklist_cctv+'">Hapus</button></td>'+
+            html += '<td>'+data[i].keterangan+'</td>'+
+            '<td><button id="btnEdit" class="btn btn-warning" value="'+data[i].id_check_cctv+'">Edit</button></td>'+
             '</tr>';
           }
           $('#show_data').html(html);
@@ -399,34 +400,59 @@
     }
 
     $('#show_data').on('click','#btnEdit',function(){
-      $.ajax({
-        type     : 'GET',
-        url      : '<?php echo site_url()?>/checklist/cctv_list/nope/nope/'+this.value,
-        dataType : 'json',
-        success : function(data){
-          $('#input_id_checklist_cctv').val(data[0].id_checklist_cctv);
-          $('#input_lokasi').val(data[0].lokasi);
-          $('#input_merk').val(data[0].merk);
-          $('#input_type').val(data[0].type);
-          $('#input_input').val(data[0].input);
-          $('#input_output').val(data[0].output);
-          $('#input_baterai_time').val(data[0].baterai_time);
-          $('#input_petugas').val(data[0].petugas);
-          $('#input_keterangan').val(data[0].keterangan);
-        }
-      });
       $('.modal-title').text('Edit Data');
-      $('#myForm').attr('action', "<?= site_url('checklist/edit/cctv') ?>");
-      $('#myModal').modal('show');
+      $('#input_id_check_cctv').val(this.value);
+      $('#pilihModal').modal('show');
     });
 
     $('#show_data').on('click','#btnHapus',function(){
-      // return false;
-      // var choice = confirm($(this).attr('data-confirm'));
-
       if (confirm("Yakin akan menghapus data yang dipilih?")) {
         window.location.href = "<?= site_url('checklist/hapus/cctv/') ?>"+this.value;
       }
+    });
+
+    $('#btnEditCheck').click(function() {
+      $('#formInsert').attr('hidden', false);
+      $('#formEditKeterangan').attr('hidden', true);
+      $('#id_check_cctv').attr('hidden', false);
+      $('.formInsertCheck').attr('hidden', true);
+      $('.formEditCheck').attr('hidden', false);
+      $('#myForm').attr('action', "<?= site_url('checklist/edit/cctv') ?>");
+      $("input[name='kondisi']").prop('checked', false);
+      $('#myModal').modal('show');
+      $('#pilihModal').modal('hide');
+    });
+
+    $('#input_tanggalEdit').on('change input', function() {
+      var tgl = '';
+      if (this.value < 10) {
+        tgl = '0'+this.value;
+      } else {
+        tgl = this.value;
+      }
+      $.ajax({
+        type     : 'GET',
+        url      : '<?php echo site_url()?>/checklist/cctv_list/nope/nope/nope/'+($('#input_id_check_cctv').val()),
+        dataType : 'json',
+        success : function(data){
+          var kondisi = eval('data[0].tgl'+tgl);
+          if (kondisi != '') {
+            $("input[name='kondisi'][value='"+kondisi+"']").prop('checked', true);
+          } else {
+            $("input[name='kondisi']").prop('checked', false);
+          }
+        }
+      });
+    });
+
+    $('#btnEditKeterangan').click(function() {
+      $('.modal-title').text('Edit Checklist');
+      $('#myForm').attr('action', "<?= site_url('checklist/edit/cctv') ?>");
+      $('#formInsert').attr('hidden', true);
+      $('#formEditKeterangan').attr('hidden', false);
+      $('#input_tanggalEdit').val('');
+      $('#myModal').modal('show');
+      $('#pilihModal').modal('hide');
     });
   } );
 }

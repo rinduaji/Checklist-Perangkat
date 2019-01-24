@@ -40,6 +40,10 @@ class Checklist extends CI_Controller {
 		$this->load->model('DataUPS');
 		$this->load->model('DataRuangan');
 		$this->load->model('DataCCTV');
+		// echo date('01-m-Y');
+		$this->DataCCTV->insertBulanan();
+		// die();
+
 	}
 
 	public function index()
@@ -93,40 +97,56 @@ class Checklist extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	public function cctv_list($bulan = '', $tahun = '', $shift = '')
-	{
-		// if ($bulan != '' && $tahun != '' && $shift != '') {
-		// 	$data = $this->DataCCTV->get($bulan,$tahun,$shift);
-		// } else {
-		// 	$data = array(
-		// 		'pesan' => 'Error : expected parameter cctv_list(bulan/tahun/shift)',
-		// 		'status' => FALSE
-		// 	);
-		// }
-		$data2 = array();
-		$data1 = $this->DataCCTV->get($bulan,$tahun,$shift);
-		foreach ($data1 as $d1) {
-			$data2[] = $this->DataCCTV->getChecklist($d1->id_cctv);
-		}
-		$data = array(
-			'data1' => $data1,
-			'data2' => $data2
-		);
-		// $data = $this->DataCCTV->getBulan(1);
-		echo json_encode($data);
-	}
+	// public function cctv_list($bulan = '', $tahun = '', $shift = '')
+	// {
+	// 	// if ($bulan != '' && $tahun != '' && $shift != '') {
+	// 	// 	$data = $this->DataCCTV->get($bulan,$tahun,$shift);
+	// 	// } else {
+	// 	// 	$data = array(
+	// 	// 		'pesan' => 'Error : expected parameter cctv_list(bulan/tahun/shift)',
+	// 	// 		'status' => FALSE
+	// 	// 	);
+	// 	// }
+	// 	$data2 = array();
+	// 	$data1 = $this->DataCCTV->get($bulan,$tahun,$shift);
+	// 	foreach ($data1 as $d1) {
+	// 		$data2[] = $this->DataCCTV->getChecklist($d1->id_cctv);
+	// 	}
+	// 	$data = array(
+	// 		'data1' => $data1,
+	// 		'data2' => $data2
+	// 	);
+	// 	// $data = $this->DataCCTV->getBulan(1);
+	// 	echo json_encode($data);
+	// }
 
-	public function cctv_checklist($id_cctv)
+	// public function cctv_checklist($id_cctv)
+	// {
+	// 	if ($id_cctv != '') {
+	// 		$data = $this->DataCCTV->getChecklist($id_cctv);
+	// 	} else {
+	// 		$data = array(
+	// 			'pesan' => 'Error',
+	// 			'status' => FALSE
+	// 		);
+	// 	}
+	// 	// $data = $this->DataCCTV->getBulan(1);
+	// 	echo json_encode($data);
+	// }
+
+	public function cctv_list($bulan = '', $tahun = '', $shift = '', $id = '')
 	{
-		if ($id_cctv != '') {
-			$data = $this->DataCCTV->getChecklist($id_cctv);
+		if ($id != '') {
+			$data = $this->DataCCTV->getCCTV('','','',$id);
+		} else if ($bulan != '' && $tahun != '' && $shift != '') {
+			$data = $this->DataCCTV->getCCTV($bulan,$tahun,$shift);
 		} else {
 			$data = array(
-				'pesan' => 'Error',
+				'pesan' => 'Error : expected parameter cctv_list(bulan/tahun/shift/id(optional))',
 				'status' => FALSE
 			);
 		}
-		// $data = $this->DataCCTV->getBulan(1);
+
 		echo json_encode($data);
 	}
 
@@ -164,6 +184,15 @@ class Checklist extends CI_Controller {
 		$this->load->view('checklist/cctv', $data);
 	}
 
+	// public function coba()
+	// {
+	// 	$data['petugas'] = $this->DataPetugas->get();
+	// 	$data['ruangan'] = $this->DataRuangan->get('','cctv');
+	// 	$data['bulan'] = $this->bulan;
+	// 	$data['tahun'] = $this->tahun;
+	// 	$this->load->view('checklist/coba', $data);
+	// }
+
 	public function tambah($bagian)
 	{
 		if ($bagian=="pc") {
@@ -172,6 +201,8 @@ class Checklist extends CI_Controller {
 			$this->DataAC->insert();
 		} else if ($bagian=="ups") {
 			$this->DataUPS->insert();
+		} else if ($bagian=="cctv") {
+			$this->DataCCTV->insert();
 		}
 	}
 
@@ -183,6 +214,8 @@ class Checklist extends CI_Controller {
 			$this->DataAC->edit();
 		} else if ($bagian=="ups") {
 			$this->DataUPS->edit();
+		} else if ($bagian=="cctv") {
+			$this->DataCCTV->edit();
 		}
 	}
 
