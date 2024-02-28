@@ -75,10 +75,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
+	'hostname' => '10.194.41.7',
 	'username' => 'root',
-	'password' => '',
-	'database' => 'pengecekan',
+	'password' => 'infonusa',
+	//'database' => 'pengecekan',
+	'database' => 'checklist',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

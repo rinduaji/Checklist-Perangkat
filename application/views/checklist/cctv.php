@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="id">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -7,9 +8,26 @@
 
   <?php $this->load->view('templates/css'); ?>
 </head>
+
 <body>
   <div class="container-fluid home">
-    <?php $this->load->view('templates/section1'); ?>
+    <?php
+     if($this->session->userdata('jabatan') == 'ME'){
+      $this->load->view('templates/sectionME');
+    }
+    else if($this->session->userdata('jabatan') == 'IT'){
+      $this->load->view('templates/sectionIT');
+    }
+    else if($this->session->userdata('jabatan') == 'Team Leader'){
+      $this->load->view('templates/sectionTL');
+    }
+    else if($this->session->userdata('jabatan') == 'Security'){
+      $this->load->view('templates/sectionSecurity');
+    }
+    else {
+      $this->load->view('templates/section1');
+    }
+    ?>
 
     <div class="isi">
       <!-- <a href="<?= site_url('laporan'); ?>" class="btn btn-primary">Print</a> -->
@@ -21,19 +39,19 @@
       <div class="text-center">
         Periode :
         <select name="bulan" id="inputBulan" class="">
-          <?php foreach ($bulan as $b => $b_val): ?>
-            <option value="<?= $b_val ?>" <?= (date('m')==$b) ? 'selected' : ''; ?> ><?= $b ?></option>
+          <?php foreach ($bulan as $b => $b_val) : ?>
+            <option value="<?= $b_val ?>" <?= (date('m') == $b) ? 'selected' : ''; ?>><?= $b ?></option>
           <?php endforeach ?>
         </select>
         <select name="tahun" id="inputTahun" class="">
-          <?php foreach ($tahun as $t): ?>
-            <option value="<?= $t ?>" <?= (date('Y')==$t) ? 'selected' : ''; ?> ><?= $t ?></option>
+          <?php foreach ($tahun as $t) : ?>
+            <option value="<?= $t ?>" <?= (date('Y') == $t) ? 'selected' : ''; ?>><?= $t ?></option>
           <?php endforeach ?>
         </select>
       </div>
       <br>
       <div class="text-center">
-        Shift : 
+        Shift :
         <select name="shift" id="inputShift" class="">
           <option value="pagi" selected>Pagi</option>
           <option value="sore">Sore</option>
@@ -42,7 +60,7 @@
       </div>
       <br>
       <?= form_close(); ?>
-      <table id="myTable" class="table table-bordered table-hover" width="100%">
+      <table id="myTable" class="table table-bordered table-hover">
         <thead class="text-center" style="align-self: center;">
           <tr>
             <th rowspan="2">Lantai</th>
@@ -77,6 +95,14 @@
           <table class="table table-hover" id="formInsert">
             <tr class="form-group formInsertCheck">
               <td>
+                Login Petugas
+              </td>
+              <td>
+                <input id="nama_petugas" type="text" class="form-control" placeholder="Login Petugas" name="nama_petugas" value="<?= $this->session->userdata('username') ?>" required="true" readonly>
+              </td>
+            </tr>
+            <tr class="form-group formInsertCheck">
+              <td>
                 Tanggal
               </td>
               <td>
@@ -99,7 +125,7 @@
               <td>
                 <select name="id_ruangan" id="input_id_ruangan" class="form-control">
                   <option value="">---Pilih Ruangan---</option>
-                  <?php foreach ($ruangan as $r): ?>
+                  <?php foreach ($ruangan as $r) : ?>
                     <option value="<?= $r->id_ruangan ?>"><?= $r->nama_ruangan ?> lantai <?= $r->lantai ?></option>
                   <?php endforeach ?>
                 </select>
@@ -177,4 +203,5 @@
 
   <?php $this->load->view('templates/javascript'); ?>
 </body>
+
 </html>

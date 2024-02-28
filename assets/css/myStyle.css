@@ -12,9 +12,16 @@ body {
 	grid-row: 2/3;
 	background: rgba(0, 0, 0, 0.5);
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(3, 1fr);
 }
-.pc, .ac, .cctv, .ups {
+
+.kontenIT {
+	grid-row: 2/3;
+	background: rgba(0, 0, 0, 0.5);
+	display: grid;
+	grid-template-columns: repeat(1, 1fr);
+}
+.pc, .cctv, .ups {
 	align-self: center;
 	text-align: center;
 	background: #c33;
@@ -24,14 +31,11 @@ body {
 .pc {
 	grid-column: 1/2;
 }
-.ac {
+.cctv {
 	grid-column: 2/3;
 }
-.cctv {
-	grid-column: 3/4;
-}
 .ups {
-	grid-column: 4/5;
+	grid-column: 3/4;
 }
 /* NAVBAR */
 .navigasi {
@@ -98,27 +102,24 @@ table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable th:
 		display: block;
 	}
 	.konten {
-		grid-template-rows: repeat(4, 1fr);
+		grid-template-rows: repeat(3, 1fr);
 		grid-template-columns: repeat(1, 1fr);
 	}
 	.konten, .isi {
 		margin-top: 20%;
 	}
-	.pc, .ac, .cctv, .ups {
+	.pc, .cctv, .ups {
 		grid-column: 1/1;
 		margin: 2% 15%;
 	}
 	.pc {
 		grid-row: 1/2;
 	}
-	.ac {
+	.cctv {
 		grid-row: 2/3;
 	}
-	.cctv {
-		grid-row: 3/4;
-	}
 	.ups {
-		grid-row: 4/5;
+		grid-row: 3/4;
 	}
 	.kiri, .kanan {
 		display: none;

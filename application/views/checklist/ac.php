@@ -17,7 +17,7 @@
       <?= form_open('laporan/ac'); ?>
       <button type="submit" class="btn btn-primary">Print</button>
       <input type="hidden" name="bagian" value="AC Telkom 147">
-      <h1>Checklist AC TELKOM 147</h1>
+      <h1>Checklist AC INFOMEDIA 147</h1>
       <div class="text-center">
         Bulan :
         <select name="bulan" id="inputBulan" class="">

@@ -9,7 +9,20 @@
 </head>
 <body>
   <div class="container-fluid home">
-    <?php $this->load->view('templates/section1'); ?>
+  <?php
+      if($this->session->userdata('jabatan') == 'ME'){
+        $this->load->view('templates/sectionME');
+      }
+      else if($this->session->userdata('jabatan') == 'IT'){
+        $this->load->view('templates/sectionIT');
+      }
+      else if($this->session->userdata('jabatan') == 'Team Leader'){
+        $this->load->view('templates/sectionTL');
+      }
+      else {
+        $this->load->view('templates/section1');
+      }
+    ?>
 
     <div class="isi">
       <!-- <a href="<?= site_url('laporan'); ?>" class="btn btn-primary">Print</a> -->

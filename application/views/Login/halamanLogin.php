@@ -17,17 +17,17 @@
 						<p class="alert <?= ($this->session->flashdata('status')) ? 'alert-success' : 'alert-danger'; ?>"><?= $pesan ?></p>
 					<?php endif ?>
 				</div>
-				<h1 class="text-center">Login</h1>
+				<h4 class="text-center">LOGIN</h4>
 			</div>
 			<div class="kiri text-center">
 				<img src="<?= base_url('assets/gambar/logo-telkom.png') ?>" alt="Logo Telkom">
 			</div>
 			<div class="tengah">
 				<div class="text-center">
-					<h4>Username</h4>
+					<h10>Username</h10>
 					<input type="text" name="username" class="form-control" required>
 					<br>
-					<h4>Password</h4>
+					<h10>Password</h10>
 					<input type="password" name="password" class="form-control" required>
 				</div>
 				<div class="button">
@@ -36,11 +36,11 @@
 				</div>
 			</div>
 			<div class="kanan text-center">
-				<img src="<?= base_url('assets/gambar/logo-ish.png') ?>" alt="Logo ISH">
+				<img src="<?= base_url('assets/gambar/Infomedia.png') ?>" alt="Logo ISH">
 			</div>
 		</div>
 	<?= form_close(); ?>
-	
+	<script type="text/javascript" src="<?= base_url('assets/jquery-3.6.1.min.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/datatables.min.js') ?>"></script>
 	<script type="text/javascript">
 		setTimeout(function(){

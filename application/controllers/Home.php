@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Home extends CI_Controller {
+class Home extends CI_Controller
+{
 
 	public function __construct()
 	{
@@ -9,7 +10,7 @@ class Home extends CI_Controller {
 		if (!$this->session->userdata('masuk')) {
 			$flashArray = array(
 				'pesan' => 'Anda Belum Login, Silahkan Login terlebih dahulu',
-				'status'=> FALSE
+				'status' => FALSE
 			);
 			$this->session->set_flashdata($flashArray);
 			redirect('login');
@@ -21,6 +22,30 @@ class Home extends CI_Controller {
 		$this->load->view('Home/viewHome');
 	}
 
+	public function homeIT()
+	{
+		$this->load->view('Home/viewHomeIT');
+	}
+
+	public function homeTL()
+	{
+		$this->load->view('Home/viewHomeTL');
+	}
+
+	public function homeME()
+	{
+		$this->load->view('Home/viewHomeME');
+	}
+
+	public function homeSecurity()
+	{
+		$this->load->view('Home/viewHomeSecurity');
+	}
+
+	public function homeOB()
+	{
+		$this->load->view('Home/viewHomeOB');
+	}
 }
 
 /* End of file home.php */

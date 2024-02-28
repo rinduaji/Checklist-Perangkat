@@ -19,6 +19,14 @@ class DataRuangan extends CI_Model {
 		return $this->db->get('ruangan')->result();
 	}
 
+	public function getLantaiOps($lantai = '', $bagian = '', $id = '') {
+		$this->db->distinct();
+		$this->db->select('lantai');
+
+		$this->db->order_by('lantai', 'asc');
+		return $this->db->get('ruangan')->result();
+	}
+
 }
 
 /* End of file modelName.php */

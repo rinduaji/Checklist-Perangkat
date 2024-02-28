@@ -64,6 +64,41 @@
         </tr>
       </table>
     </td>
+
+    <td width="50%">
+      <table border="1" style="float: left" width="10%">
+        <tr>
+          <td>M1</td>
+          <td>Monitor</td>
+        </tr>
+        <tr>
+          <td rowspan="2">M2</td>
+          <td>Mouse</td>
+        </tr>
+        <tr>
+          <td>Keyboard</td>
+        </tr>
+        <tr>
+          <td rowspan="6">CPU</td>
+          <td>Mainboard</td>
+        </tr>
+        <tr>
+          <td>Processor</td>
+        </tr>
+        <tr>
+          <td>RAM</td>
+        </tr>
+        <tr>
+          <td>Harddisk</td>
+        </tr>
+        <tr>
+          <td>Power Supply</td>
+        </tr>
+        <tr>
+          <td>Casing</td>
+        </tr>
+      </table>
+    </td>
     <td width="50%" style="text-align: center">
       SPV IT CC Malang <br>
       PT. Infomedia Nusantara

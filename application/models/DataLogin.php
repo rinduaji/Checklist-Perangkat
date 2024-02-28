@@ -1,18 +1,18 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class DataLogin extends CI_Model {
+class DataLogin extends CI_Model
+{
 
 	public function getLogin()
 	{
 		foreach ($this->db->get('login')->result() as $value) {
-			if ($this->input->post('username') == $value->username && md5($this->input->post('password')) == $value->password) {
-				return true;
+			if (strtolower($this->input->post('username')) == strtolower($value->username) && md5($this->input->post('password')) == $value->password) {
+				return $value->jabatan;
 			}
 		}
 		return false;
 	}
-
 }
 
 /* End of file dataLogin.php */
